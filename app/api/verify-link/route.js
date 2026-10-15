@@ -1,11 +1,12 @@
 const express = require('express')
 const auth = require('../../../lib/auth')
+const { requireApiKey } = require('../../../lib/apikey')
 const { friendlyFirebaseError } = require('../../../lib/errors')
 const { incrementStats, getStats } = require('../../../lib/stats')
 
 const router = express.Router()
 
-router.post('/', async (req, res) => {
+router.post('/', requireApiKey, async (req, res) => {
   const { email, magicLink } = req.body
   if (!email || !email.includes('@')) {
     return res.status(400).json({ success: false, message: 'email wajib diisi.' })
