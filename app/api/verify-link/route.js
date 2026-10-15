@@ -6,19 +6,39 @@ const { incrementStats, getStats } = require('../../../lib/stats')
 const router = express.Router()
 
 router.post('/', async (req, res) => {
-  const { email, magicLink } = req.body
-  if (!email || !email.includes('@')) {
-    return res.status(400).json({ success: false, message: 'email wajib diisi.' })
-  }
-  if (!magicLink || !magicLink.trim()) {
-    return res.status(400).json({ success: false, message: 'link dari email wajib diisi.' })
+  const { email, magicLink } = req.body || {};
+  if (
+    typeof email !== 'string' ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+  ) {
+    return res.status(400).json({
+      success: false,
+      code: 'INVALID_EMAIL',
+      message: 'Email tidak valid.'
+    });
   }
 
-  const em = email.trim().toLowerCase()
-  const v = await auth.auth(em, magicLink.trim())
-  if (!v.ok) {
-    return res.status(400).json({ success: false, message: friendlyFirebaseError(v.why), code: v.why })
+  if (
+    typeof magicLink !== 'string' ||
+    !magicLink.trim()
+  ) {
+    return res.status(400).json({
+      success: false,
+      code: 'INVALID_MAGIC_LINK',
+      message: 'Link dari email wajib diisi.'
+    });
   }
+
+  const em = email.trim().toLowerCase();
+  try {
+    const v = await auth.auth(em, magicLink.trim());
+    if (!v.ok) {
+      return res.status(400).json({
+        success: false,
+        code: v.why,
+        message: friendlyFirebaseError(v.why)
+      });
+        }
 
   const uid = v.uid || v.user?.localId || '-'
   const premium = await auth.pro(v.id)
