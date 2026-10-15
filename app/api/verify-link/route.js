@@ -1,6 +1,6 @@
 const express = require('express')
 const auth = require('../../../lib/auth')
-const { requireApiKey } = require('../../../lib/apikey')
+const { requireApiKey } = require('../../../lib/api-key')
 const { friendlyFirebaseError } = require('../../../lib/errors')
 const { incrementStats, getStats } = require('../../../lib/stats')
 
