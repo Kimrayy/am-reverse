@@ -13,6 +13,6 @@ router.use('/get-link', sendLinkRoute);
 
 // Legacy third-party authentication handler is unchanged.
 // It is not presented as a supported customer-facing reseller workflow.
-router.use('/verify-link', verifyLinkRoute);
+router.use('/verify', verifyLinkRoute);
 
 module.exports = router;
