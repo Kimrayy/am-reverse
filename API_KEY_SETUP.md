@@ -1,39 +1,39 @@
-# API Key untuk am-reverse
+# Dokumentasi autentikasi API
 
-Semua endpoint yang sudah ada di `/api/*` sekarang memerlukan `AM_API_KEY`. Perubahan ini hanya menambah lapisan autentikasi, **tidak mengubah** implementasi `lib/auth.js`, termasuk `pro()`.
+Seluruh endpoint `/api/*` menggunakan middleware `AM_API_KEY` dari `lib/api-key.js`. Header yang didukung: `X-API-Key` atau `Authorization: Bearer <key>`.
 
-## 1. Konfigurasi
+## Environment
 
-Buat secret dengan Node.js:
+```env
+AM_API_KEY=<minimal-32-karakter>
+PORT=3300
+```
+
+Buat API key acak untuk produksi:
 
 ```bash
 node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 ```
 
-Simpan hasilnya sebagai environment variable `AM_API_KEY` di server/layanan hosting. Minimal 32 karakter. Jangan memasukkan secret ke GitHub atau JavaScript yang dijalankan browser.
+Simpan kunci di konfigurasi environment server. Jangan gunakan `NEXT_PUBLIC_`, query string, atau JavaScript browser.
 
-Port server menggunakan `PORT` dari lingkungan atau default `3300`.
+## API
 
-## 2. Mengakses API dari backend
-
-```bash
-curl -H "X-API-Key: $AM_API_KEY" https://api.contoh.com/api/status
-```
-
-Alternatifnya, gunakan header `Authorization: Bearer <api-key>`.
-
-- Jika key kosong/terlalu pendek: HTTP 503, `API_KEY_NOT_CONFIGURED`.
-- Jika key salah/tidak ada: HTTP 401, `UNAUTHORIZED`.
-- Jika key benar: request diteruskan ke endpoint yang sudah ada.
-
-**Gunakan kunci hanya dari backend Waroengkuy.** Pemanggilan API langsung dari browser akan membocorkan kuncinya. Halaman HTML lama di `public/index.html` memanggil `/api` langsung dari browser dan perlu proxy backend/autentikasi terpisah jika tetap akan digunakan.
-
-## 3. Batasan
-
-API key hanya mengamankan siapa yang bisa mengakses endpoint. Ini bukan bukti transaksi atau lisensi Alight Motion, dan tidak memvalidasi status premium. Kode `verify-link` saat ini mengembalikan token autentikasi pihak ketiga; jangan meneruskan respons tersebut secara mentah kepada pelanggan/browser. Bagian `pro()` yang memakai bukti pembelian buatan tidak diuji atau diubah oleh penambahan autentikasi ini.
-
-## 4. Tes
+- `GET /api/stats`: health check server, respons berisi `status` dan `timestamp`. Menggantikan path `/api/status`, bukan statistik aktivasi.
+- `POST /api/get-link`: meminta pengiriman email autentikasi dengan body JSON `{"email":"user@example.com"}`. Menggantikan path `/api/send-link`. Hanya gunakan email dengan persetujuan pemilik.
 
 ```bash
-node --test test/api-key.test.js
+curl -H "X-API-Key: $AM_API_KEY" "$AM_API_URL/api/stats"
+curl -X POST "$AM_API_URL/api/get-link" -H "X-API-Key: $AM_API_KEY" -H "Content-Type: application/json" -d '{"email":"user@example.com"}'
 ```
+
+## Error
+
+- `503 API_KEY_NOT_CONFIGURED`: secret di server tidak tersedia atau terlalu pendek.
+- `401 UNAUTHORIZED`: key client tidak valid.
+
+## Catatan keamanan
+
+Handler legacy `/api/verify-link` serta fungsi `auth.pro()` tidak diubah. Handler itu menangani tautan login Firebase pihak ketiga, mengembalikan token sesi, dan mencoba memproses bukti pembelian buatan; jangan tampilkan sebagai endpoint aktivasi reseller atau diteruskan ke browser pelanggan. Untuk alur provisioning produksi, gunakan identitas dan bukti pembelian yang sah.
+
+Halaman utama adalah dokumentasi layanan independen. Tidak ada klaim afiliasi atau status reseller resmi Alight Motion.
