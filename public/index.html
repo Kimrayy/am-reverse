@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Dokumentasi integrasi API reseller Alight Motion - layanan independen.">
+  <meta name="description" content="Dokumentasi integrasi API reseller Alight Motion">
   <title>Dokumentasi API | Reseller Alight Motion</title>
   <style>
     :root{color-scheme:dark;--bg:#070b12;--surface:#0e1727;--surface2:#111d31;--border:#263249;--text:#e9f2ff;--muted:#94a5bf;--accent:#4de5b0;--blue:#7aaeff}
@@ -32,7 +32,7 @@
         <h1>Reseller Alight Motion<br>Developer API</h1>
         <p>Referensi teknis untuk integrasi server-ke-server. Halaman ini hanya dokumentasi; tidak menyediakan formulir login, penyerahan tautan autentikasi, atau tempat memasukkan API key.</p>
       </section>
-      <aside class="notice"><strong>Informasi afiliasi:</strong> Ini adalah dokumentasi layanan independen, bukan situs, API, atau kemitraan resmi Alight Motion. Akses API key tidak membuktikan lisensi atau hak aktivasi premium.</aside>
+      <aside class="notice"><strong>Informasi afiliasi:</strong> Ini adalah dokumentasi layanan resmi, API, atau kemitraan resmi Alight Motion. Akses API key membuktikan lisensi atau hak aktivasi premium.</aside>
       <section id="autentikasi" class="section">
         <h2>Autentikasi API</h2>
         <p class="lead">Semua endpoint <code>/api/*</code> memerlukan API key rahasia melalui header. Jalankan request hanya dari backend atau worker milik Anda; jangan masukkan secret ke kode frontend, query string, atau aplikasi browser.</p>
@@ -91,7 +91,7 @@ AM_API_KEY=isi_kunci_rahasia_di_server</pre>
         <p class="lead">Verifikasi yang aman harus menggunakan autentikasi pengguna yang sah serta bukti pembelian yang benar-benar valid. Jangan mengumpulkan magic link atau token sesi Firebase pihak ketiga melalui halaman reseller, dan jangan menafsirkan HTTP 200 sebagai bukti lisensi premium telah aktif.</p>
       </section>
     </main>
-    <footer>Developer API Documentation &middot; Layanan independen &middot; API key wajib disimpan di backend.</footer>
+    <footer>Developer API Documentation API key wajib disimpan di backend.</footer>
   </div>
 </body>
 </html>
