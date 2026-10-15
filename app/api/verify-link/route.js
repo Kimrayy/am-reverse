@@ -77,6 +77,7 @@ router.post('/', async (req, res) => {
       profile: v.user || null
     }
   })
-})
+  })
+}
 
 module.exports = router
