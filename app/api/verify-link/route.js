@@ -38,7 +38,7 @@ router.post('/', async (req, res) => {
         code: v.why,
         message: friendlyFirebaseError(v.why)
       });
-        }
+    }
 
   const uid = v.uid || v.user?.localId || '-'
   const premium = await auth.pro(v.id)
